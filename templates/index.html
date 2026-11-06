@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Anveshan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Libre+Franklin:wght@400;600;800&display=swap" rel="stylesheet">
+  {# url_for('static', ...) = static folder ki file ka sahi raasta #}
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+{# Type codes ko padhne layak naam #}
+{% set TYPE = {
+  'PYQ': 'Previous year paper', 'NOTES': 'Notes', 'BOOK': 'Book',
+  'LAB': 'Lab / practical', 'SYLLABUS': 'Syllabus', 'OTHER': 'Other'
+} %}
+{% set EXAM = {'MID': 'mid-sem', 'END': 'end-sem'} %}
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="wordmark" href="/">Anveshan</a>
+    <span class="tagline">Papers, notes and books for FoT, University of Delhi</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <h1>Find a paper, a set of notes or a lab manual</h1>
+    <p class="lede">Every file is stored once and tagged with its subjects, so you can filter by branch, semester, type or year in any order.</p>
+
+    <form method="get" action="/">
+      <div class="search-row">
+        <label class="sr-only" for="q">Search files</label>
+        <input id="q" class="search-box" name="q" value="{{ f.q or '' }}"
+               placeholder="Try dbms, normalization or matrix">
+        <button class="btn" type="submit">Search</button>
+      </div>
+
+      {# onchange="this.form.submit()": dropdown badalte hi form apne aap chala jaata hai #}
+      <div class="filters">
+        <label>Branch
+          <select name="branch" onchange="this.form.submit()">
+            <option value="">Any</option>
+            {% for b in options.branches %}
+              <option value="{{ b.branch_code }}" {% if f.branch == b.branch_code %}selected{% endif %}>{{ b.branch_code }}</option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <label>Semester
+          <select name="sem" onchange="this.form.submit()">
+            <option value="">Any</option>
+            {% for s in options.semesters %}
+              <option value="{{ s.semester }}" {% if f.sem == s.semester %}selected{% endif %}>Semester {{ s.semester }}</option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <label>Subject
+          <select name="subj" onchange="this.form.submit()">
+            <option value="">Any</option>
+            {% for s in options.subjects %}
+              <option value="{{ s.subject_id }}" {% if f.subj == s.subject_id %}selected{% endif %}>{{ s.short_name }} - {{ s.subject_name }}</option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <label>Type
+          <select name="rtype" onchange="this.form.submit()">
+            <option value="">Any</option>
+            {% for t in options.types %}
+              <option value="{{ t }}" {% if f.rtype == t %}selected{% endif %}>{{ TYPE[t] }}</option>
+            {% endfor %}
+          </select>
+        </label>
+
+        <label>Year
+          <select name="yr" onchange="this.form.submit()">
+            <option value="">Any</option>
+            {% for y in options.years %}
+              <option value="{{ y.academic_year }}" {% if f.yr == y.academic_year %}selected{% endif %}>{{ y.academic_year }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+
+      {% if f.q or f.branch or f.sem or f.subj or f.rtype or f.yr %}
+        <a class="clear" href="/">Clear all filters</a>
+      {% endif %}
+    </form>
+  </section>
+
+  <section>
+    {% if docs %}
+      <p class="result-count">
+        {{ docs|length }} file{{ 's' if docs|length != 1 }}
+        {%- if docs|length >= max_results %}, showing the newest {{ max_results }}{% endif %}
+      </p>
+
+      <div class="card-grid">
+        {% for d in docs %}
+        <article class="card">
+          <div class="card-head">
+            <span>{{ d.subjects }}</span>
+            <span>{{ d.academic_year or '' }}{% if d.exam_type %} {{ EXAM[d.exam_type] }}{% endif %}</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">
+              <a href="{{ d.file_url }}" target="_blank" rel="noopener">{{ d.title }}</a>
+            </h3>
+            <p>{{ TYPE.get(d.resource_type, d.resource_type) }}</p>
+            <p>Shared by Seniors</p>
+          </div>
+          <div class="card-actions">
+            <a class="btn" href="{{ d.file_url }}" target="_blank" rel="noopener">Open file</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty">
+        <p><strong>No approved file matches these filters.</strong></p>
+        <p><a href="/">Clear all filters</a> and try a broader search.</p>
+      </div>
+    {% endif %}
+  </section>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">Anveshan, a DBMS project. Faculty of Technology, University of Delhi.</div>
+</footer>
+
+</body>
+</html>

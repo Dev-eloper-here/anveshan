@@ -1,0 +1,136 @@
+/* Anveshan - library catalogue look.
+   Har file ek index card hai: upar laal line, neeche neeli ruled lines,
+   title typewriter font me - jaise purane library card catalogue me. */
+
+/* ---------- colours aur fonts ek jagah ---------- */
+:root {
+  --desk: #DCE3EA;        /* page ka background - steel cabinet jaisa */
+  --card: #FFFFFF;
+  --ink: #1E2B47;         /* text - navy ink */
+  --muted: #566178;       /* halka text */
+  --rule-red: #C2362C;    /* card ki laal line */
+  --rule-blue: #C6D5E9;   /* card ki neeli lines */
+  --line: 1.6rem;         /* ek ruled line ki unchai */
+  --sans: "Libre Franklin", Arial, sans-serif;
+  --type: "Courier Prime", "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--desk);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+}
+
+a { color: inherit; }
+:focus-visible { outline: 3px solid #5B42A0; outline-offset: 2px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* content beech me, max 74rem chauda */
+.wrap { max-width: 74rem; margin: 0 auto; padding: 0 clamp(1rem, 4vw, 3rem); }
+
+/* ---------- header / footer ---------- */
+.site-head { padding: 1.1rem 0; border-bottom: 1px solid #C3CCD7; }
+.site-head .wrap { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1.25rem; }
+.wordmark { font-weight: 800; font-size: 1.6rem; letter-spacing: -.02em; text-decoration: none; }
+.tagline { color: var(--muted); font-size: .95rem; }
+
+.site-foot {
+  margin-top: 3rem; padding: 1.5rem 0 2rem;
+  border-top: 1px solid #C3CCD7; color: var(--muted); font-size: .85rem;
+}
+
+/* "main.wrap" likha hai, sirf "main" nahi: .wrap ka padding isse
+   zyada strong (specific) hai, to sirf "main" likhne par ye rule haar jaata. */
+main.wrap { padding-top: 2.25rem; }
+
+/* ---------- heading ---------- */
+h1 {
+  font-size: clamp(1.9rem, 4.2vw, 2.8rem); line-height: 1.12; font-weight: 800;
+  letter-spacing: -.025em; margin: 0 0 .6rem; max-width: 20ch;
+}
+.lede { color: var(--muted); max-width: 60ch; margin: 0 0 1.5rem; }
+
+/* ---------- search form ---------- */
+.search-row { display: flex; gap: .6rem; max-width: 48rem; }
+.search-box {
+  flex: 1; min-width: 0;
+  font: 700 1.15rem/1.4 var(--type); color: var(--ink);
+  padding: .75rem 1rem; background: var(--card);
+  border: 2px solid var(--ink); border-radius: 3px;
+}
+.search-box::placeholder { color: #8A94A6; font-weight: 400; }
+
+.filters { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; margin-top: 1rem; }
+.filters label { display: grid; gap: .2rem; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.filters select {
+  font: 1rem var(--sans); color: var(--ink);
+  padding: .45rem .5rem; min-width: 8rem; max-width: 18rem;
+  background: var(--card); border: 1.5px solid #97A3B4; border-radius: 3px;
+}
+.clear { display: inline-block; margin-top: .9rem; font-weight: 600; font-size: .92rem; }
+
+.result-count { font-weight: 600; color: var(--muted); margin: 2rem 0 1rem; }
+
+/* ---------- button ---------- */
+.btn {
+  display: inline-block; cursor: pointer;
+  font: 600 .95rem/1.2 var(--sans); text-decoration: none;
+  padding: .55rem 1rem; border-radius: 3px;
+  background: var(--ink); color: #fff; border: 2px solid var(--ink);
+}
+.btn:hover { background: #2D3D63; border-color: #2D3D63; }
+
+/* ---------- index card ---------- */
+/* auto-fill: jitne 21rem ke card ek line me aa sakein, utne. Mobile pe 1. */
+.card-grid {
+  display: grid; gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(21rem, 100%), 1fr));
+}
+.card {
+  display: flex; flex-direction: column;
+  background: var(--card); border-radius: 2px;
+  box-shadow: 0 1px 0 #B4BFCC, 0 10px 18px -14px rgba(30, 43, 71, .55);
+}
+
+/* upar: subjects aur saal, neeche laal line */
+.card-head {
+  display: flex; justify-content: space-between; gap: 1rem;
+  padding: .7rem 1rem .35rem;
+  font: 700 .88rem/1.3 var(--type);
+  border-bottom: 2px solid var(--rule-red);
+}
+.card-head span:last-child { white-space: nowrap; }
+
+/* beech: neeli ruled lines - ek repeating gradient se banti hain */
+.card-body {
+  flex: 1; padding: 0 1rem .2rem;
+  font: .95rem/var(--line) var(--type);
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0, transparent calc(var(--line) - 1px),
+    var(--rule-blue) calc(var(--line) - 1px), var(--rule-blue) var(--line));
+}
+.card-body p { margin: 0; }
+.card-title { margin: 0; font: 700 1.05rem/var(--line) var(--type); }
+.card-title a { text-decoration: none; }
+.card-title a:hover { text-decoration: underline; }
+
+.card-actions { padding: .8rem 1rem .9rem; }
+
+/* ---------- jab kuch na mile ---------- */
+.empty { background: var(--card); padding: 1.5rem 1.75rem; max-width: 40rem; border-radius: 2px; }
+.empty p { margin: 0 0 .4rem; }
+
+/* ---------- chhoti screen ---------- */
+@media (max-width: 34rem) {
+  .filters label { flex: 1 1 100%; }
+  .filters select { max-width: none; width: 100%; }
+}
